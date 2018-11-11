@@ -572,7 +572,10 @@ function gameLaunch() {
                         this.currentSpeed += this.config.ACCELERATION;
                     }
                 } else {
-                    this.gameOver();
+                    GLOBALSPEED -= 0.1
+                    if (GLOBALSPEED <0) {
+                      this.gameOver()
+                    }
                 }
 
                 var playAchievementSound = this.distanceMeter.update(deltaTime,
