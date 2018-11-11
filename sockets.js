@@ -38,16 +38,18 @@ module.exports = {
 			//disconnect player condition
 
 			players[id] = playerObject
+			console.log('id: ' + id)
+			socket.emit('id', id)
+			socket.join('room')
+
+			io.to('room').emit('playerlist', players)
 			socket.on('disconnect', function() {
 				console.log('Got disconnect: '+ id);
 
 				//TODO: add disconnet handler for playerlist
-
+				players[id] = null
+				io.to('room').emit('playerlist', players)
 			});
-			socket.join('room')
-
-			socket.emit('id', id)
-			io.to('room').emit('playerlist', players)
 
 			socket.on('voteStart', socket => {
 				if (gameStarted) return

@@ -10,8 +10,8 @@ socket.on('connect', () => {
 })
 
 socket.on('id', (id) => {
-	console.log("Your id is " + this.id)
-	your_player_id = this.id
+	console.log("Your id is " + id)
+	your_player_id = id
 })
 
 socket.on('event', (event, id) => {
