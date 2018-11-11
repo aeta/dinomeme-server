@@ -4,6 +4,12 @@
 
 var your_player_id
 var socket = io('http://localhost:3001/')
+var GAP = 5
+
+socket.on('gapthing', (gapnumber) => {
+	GAP = gapnumber
+	console.log(GAP)
+})
 
 socket.on('connect', () => {
 	console.log("Connected.")
