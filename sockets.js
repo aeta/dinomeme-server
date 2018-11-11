@@ -27,7 +27,14 @@ module.exports = {
 		io = require('socket.io')(server)
 
 		io.on('connection', socket => {
-			console.log('connect')
+			if (gameStarted) {
+				socket.close()
+				console.log("Game started, rejecting any additional connections.")
+				return
+			}
+
+			console.log('Client successfully connected.')
+
 			// generate an id for this socket
 			const id = hat(16)
 			const playerObject = {
@@ -68,24 +75,9 @@ module.exports = {
 				setInterval(obstacle, 3000)
 			})
 
-			socket.on('event', (event) => {
+			socket.on('event', (event, id) => {
 				console.log(event)
 				io.to('room').emit('event', event, id)
-			})
-
-			socket.on('jump', () => {
-				if (!gameStarted) return
-				io.to('room').emit('jump', id)
-			})
-
-			socket.on('crouch', () => {
-				if (!gameStarted) return
-				io.to('room').emit('crouch', id)
-			})
-
-			socket.on('obstacle', () => {
-				if (!gameStarted) return
-				io.to('room').emit('obstacle', id)
 			})
 		})
 	}
