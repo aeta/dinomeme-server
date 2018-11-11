@@ -20,6 +20,8 @@ socket.on('event', (event, id) => {
 	} else {
 		console.log(id + " did something.")
 	}
+
+	recieveEvent(event, id)
 })
 
 // //recieve list of connected players
