@@ -1374,6 +1374,7 @@ function gameLaunch() {
                         speed += this.speedOffset;
                     }
                     this.xPos -= Math.floor((speed * FPS / 1000) * deltaTime);
+                    console.log("obstacle xpos: " + this.xPos)
 
                     // Update frame
                     if (this.typeConfig.numFrames) {
