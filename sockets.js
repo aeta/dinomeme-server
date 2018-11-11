@@ -11,7 +11,7 @@ const hat = length => {
 }
 
 var gameStarted = false
-var players = []
+var playerlist = []
 
 module.exports = {
 	init: server => {
@@ -31,7 +31,7 @@ module.exports = {
 			socket.join('room')
 
 			socket.emit('id', id)
-			io.to('room').emit('playerlist', players)
+			io.to('room').emit('playerlist', playerlist)
 
 			socket.on('voteStart', socket => {
 				if (gameStarted) return
