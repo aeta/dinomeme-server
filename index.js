@@ -110,7 +110,7 @@ function gameLaunch() {
      * @enum {number}
      */
     Runner.config = {
-        ACCELERATION: 0.00001,
+        ACCELERATION: 0.01,
         BG_CLOUD_SPEED: 0.2,
         BOTTOM_PAD: 10,
         CLEAR_TIME: 3000,
@@ -598,7 +598,7 @@ function gameLaunch() {
                         this.currentSpeed += this.config.ACCELERATION;
                     }
                 } else {
-                    this.currentSpeed -= 0.1
+                    this.currentSpeed -= 0.5
                     if (this.currentSpeed < 0) {
                         this.gameOver()
                     }
@@ -1407,6 +1407,7 @@ function gameLaunch() {
                         speed += this.speedOffset;
                     }
                     this.xPos -= Math.floor((speed * FPS / 1000) * deltaTime);
+                    console.log("obstacle xpos: " + Math.floor((speed * FPS / 1000) * deltaTime))
 
                     // Update frame
                     if (this.typeConfig.numFrames) {

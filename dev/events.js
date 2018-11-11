@@ -23,7 +23,7 @@ function sendEvent(keyEvent) {
     }
 
     console.log("Sent event: " + event)
-    socket.emit('event', event)
+    socket.emit('event', event, your_player_id)
 }
 
 function recieveEvent(event, id) {
