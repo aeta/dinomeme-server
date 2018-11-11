@@ -1,16 +1,8 @@
-const io = require('socket.io-client')
+// const io = require('socket.io-client')
+// const socket = io('http://localhost:3001/')
 
-const socket = io('http://localhost:3001/')
+// socket.on('moreyes', () => {
+// 	console.log('hi')
+// })
 
-socket.on('id', (id) => {
-	console.log(id)
-
-})
-socket.on('jump', (id) => {
-	
-	console.log(id)
-
-})
-
-
-//socket.emit('voteStart')
+// socket.emit('voteStart')

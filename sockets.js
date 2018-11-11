@@ -11,17 +11,17 @@ const hat = length => {
 }
 
 var gameStarted = false
-var playerlist = []
+var players = []
 
 module.exports = {
 	init: server => {
 		io = require('socket.io')(server)
 
 		io.on('connection', socket => {
+			console.log('connect')
 			// generate an id for this socket
 			const id = hat(16)
 			const playerObject = {
-				socket,
 				id,
 				votedStart: false,
 				display: 0
@@ -31,7 +31,7 @@ module.exports = {
 			socket.join('room')
 
 			socket.emit('id', id)
-			io.to('room').emit('playerlist', playerlist)
+			io.to('room').emit('playerlist', players)
 
 			socket.on('voteStart', socket => {
 				if (gameStarted) return
@@ -48,6 +48,11 @@ module.exports = {
 				io.to('room').emit('startGame')
 
 				setInterval(obstacle, 3000)
+			})
+
+			socket.on('event', (event) => {
+				console.log(event)
+				io.to('room').emit('event', event, id)
 			})
 
 			socket.on('jump', () => {
