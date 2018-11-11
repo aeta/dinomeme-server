@@ -574,7 +574,7 @@ function gameLaunch() {
                         this.currentSpeed += this.config.ACCELERATION;
                     }
                 } else {
-                    this.currentSpeed -= 0.5
+                    this.currentSpeed -= 0.3
                     if (this.currentSpeed < 0) {
                       this.gameOver()
                     }
@@ -1404,10 +1404,12 @@ function gameLaunch() {
              * @return {number} The gap size.
              */
             getGap: function (gapCoefficient, speed) {
-                var minGap = Math.round(this.width * speed +
-                    this.typeConfig.minGap * gapCoefficient);
-                var maxGap = Math.round(minGap * Obstacle.MAX_GAP_COEFFICIENT);
-                return getRandomNum(minGap, maxGap);
+                // var minGap = Math.round(this.width * speed +
+                //     this.typeConfig.minGap * gapCoefficient);
+                //  var maxGap = Math.round(minGap * Obstacle.MAX_GAP_COEFFICIENT);
+              //  return getRandomNum(minGap, maxGap);
+
+              return GAP
             },
 
             /**

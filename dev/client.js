@@ -5,6 +5,12 @@
 var your_player_id
 var is_game_running
 var socket = io('http://192.168.2.129:3001/')
+var GAP = 5
+
+socket.on('gapthing', (gapnumber) => {
+	GAP = gapnumber
+	console.log(GAP)
+})
 
 socket.on('connect', () => {
 	console.log("Connected.")
