@@ -11,31 +11,31 @@ var OBSTACLE_TYPE = 0
 socket.on('gapthing', (gapnumber, obstacle_type) => {
 	GAP = gapnumber
 	OBSTACLE_TYPE = obstacle_type
-	console.log("Gap Size: " + GAP + " | Type: " + OBSTACLE_TYPE)
+	console.log('Gap Size: ' + GAP + ' | Type: ' + OBSTACLE_TYPE)
 })
 
 socket.on('connect', () => {
-	console.log("Connected.")
-	document.getElementById("offlineStatusMessage").style.visibility = "hidden";
+	console.log('Connected.')
+	document.getElementById('offlineStatusMessage').style.visibility = 'hidden'
 })
 
-socket.on('id', (id) => {
-	console.log("Your id is " + id)
+socket.on('id', id => {
+	console.log('Your id is ' + id)
 	your_player_id = id
 })
 
 socket.on('event', (event, id) => {
 	if (this.id == your_player_id) {
-		console.log("You did something.")
+		console.log('You did something.')
 	} else {
-		console.log(id + " did something.")
+		console.log(id + ' did something.')
 	}
 
 	recieveEvent(event, id)
 })
 
 socket.on('game_start', () => {
-	console.log("starting game");
+	console.log('starting game')
 	is_game_running = true
 	//recieveEvent('JUMP', your_player_id)
 
@@ -49,8 +49,9 @@ socket.on('game_over', () => {
 })
 
 // //recieve list of connected players
-socket.on('playerlist', (playerlist) => {
-	console.log(playerlist)
+socket.on('playerlist', playerlist => {
+	//console.log("updated player list")
+	Runner.instance_.updatePlayerList(playerlist)
 	checkVoteCount(playerlist)
 })
 
@@ -59,25 +60,24 @@ function handleEndGame() {
 }
 
 function checkVoteCount(dict) {
-	var voteCount = 0;
-	var totalPlayers = 0;
-	for(var key in dict) {
-  var value = dict[key];
-	if (value == null) {
-		continue
+	var voteCount = 0
+	var totalPlayers = 0
+	for (var key in dict) {
+		var value = dict[key]
+		if (value == null) {
+			continue
+		}
+		totalPlayers += 1
+		if (value.votedStart) {
+			voteCount += 1
+		}
+
+		//	console.log (voteCount)
+		document.getElementById('voteCount').textContent = voteCount + ' / '
+		document.getElementById('totalPlayers').textContent = totalPlayers
+
+		// do something with "key" and "value" variables
 	}
-	totalPlayers +=1
-	if (value.votedStart) {
-		voteCount += 1
-	}
-
-	console.log (voteCount)
-	document.getElementById('voteCount').textContent = voteCount + " / "
-	document.getElementById("totalPlayers").textContent = totalPlayers
-
-  // do something with "key" and "value" variables
-
-}
 }
 
 function clickVote() {
@@ -86,5 +86,5 @@ function clickVote() {
 
 function clickUpdateNickname() {
 	const text = document.getElementById('onchange').value
-	console.log(text)
+	//	console.log(text)
 }

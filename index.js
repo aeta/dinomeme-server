@@ -9,6 +9,8 @@
 //    GLOBALSPEED += 0.000000000001
 //  }, 10000)
 //}
+var frameCount = 0;
+var remote_trexes = {}
 function gameLaunch() {
     'use strict';
     /**
@@ -383,7 +385,8 @@ function gameLaunch() {
                 this.spriteDef.TEXT_SPRITE, this.dimensions.WIDTH);
 
             // Draw t-rex
-            this.tRex = new Trex(this.canvas, this.spriteDef.TREX,true);
+            this.tRex = new Trex(this.canvas, this.spriteDef.TREX, your_player_id, true);
+
 
             this.outerContainerEl.appendChild(this.containerEl);
 
@@ -461,6 +464,46 @@ function gameLaunch() {
                 }
             }
         },
+        // make other players sprites
+        updatePlayerList: function(players) {
+
+
+
+
+            for (var key in players) {
+
+              var value = players[key]
+              if (!value) {
+                continue
+              }
+              if (remote_trexes[key] == null) {
+                remote_trexes[key] = new Trex(this.canvas, this.spriteDef.TREX, key, false)
+              }
+              else {
+                var position = value.distance - players[your_player_id].distance
+                remote_trexes[key].xpos += position
+
+              }
+
+            }
+        },
+
+        // updatePlayer: function(event, id) {
+        //     var trexToManipulate
+        //     if (id == your_player_id) {
+        //         trexToManipulate = this.tRex
+        //     } else {
+        //         trexToManipulate = this.remote_trexes[id]
+        //     }
+
+        //     if (trexToManipulate == null || trexToManipulate == undefined) {
+        //         console.log("No trex to manipulate :(")
+        //         return
+        //     }
+
+        //     trexToManipulate.
+
+        // },
 
         /**
          * Play the game intro.
@@ -520,7 +563,7 @@ function gameLaunch() {
             window.addEventListener(Runner.events.FOCUS,
                 this.onVisibilityChange.bind(this));
 
-//                startAcceleration()
+            //                startAcceleration()
         },
 
         clearCanvas: function () {
@@ -554,7 +597,7 @@ function gameLaunch() {
                 }
 
                 // The horizon doesn't move until the intro is over.
-  //              this.currentSpeed = GLOBALSPEED
+                //              this.currentSpeed = GLOBALSPEED
                 if (this.playingIntro) {
                     this.horizon.update(0, this.currentSpeed, hasObstacles);
                 } else {
@@ -576,7 +619,7 @@ function gameLaunch() {
                 } else {
                     this.currentSpeed -= 0.3
                     if (this.currentSpeed < 0) {
-                      this.gameOver()
+                        this.gameOver()
                     }
                 }
 
@@ -597,6 +640,16 @@ function gameLaunch() {
                 } else {
                     var actualDistance =
                         this.distanceMeter.getActualDistance(Math.ceil(this.distanceRan));
+
+                    //update distance in sockets
+                    if (frameCount % 15 == 0) {
+                      frameCount = 0
+                      socket.emit('distance', actualDistance)
+                      //console.log("distance: " + actualDistance)
+                    }
+                    frameCount += 1;
+
+
 
                     if (actualDistance > 0) {
                         this.invertTrigger = !(actualDistance %
@@ -678,7 +731,7 @@ function gameLaunch() {
          * @param {Event} e
          */
         onKeyDown: function (e) {
-            console.log("onkeydown")
+            //console.log("onkeydown")
             sendEvent(e);
         },
         /**
@@ -686,35 +739,43 @@ function gameLaunch() {
          * @param {string} e
          */
         onWebSocketEvent: function (e, playerID) {
+
             console.log("Web Socket Event: " + e)
+            var trexToManipulate
+
+            if (playerID == your_player_id) {
+                trexToManipulate = this.tRex
+            } else {
+                trexToManipulate = this.remote_trexes[playerID]
+            }
+
             if (!this.crashed && e == "JUMP") {
                 if (!this.playing) {
                     this.loadSounds();
-                        this.playing = true;
-                        this.update();
-                        if (window.errorPageController) {
-                            errorPageController.trackEasterEgg();
-                        }
+                    this.playing = true;
+                    this.update();
+                    if (window.errorPageController) {
+                        errorPageController.trackEasterEgg();
                     }
+                }
                 //  Play sound effect and jump on starting the game for the first time.
-                if (!this.tRex.jumping && !this.tRex.ducking) {
+                if (!trexToManipulate.jumping && !trexToManipulate.ducking) {
                     this.playSound(this.soundFx.BUTTON_PRESS);
-                    this.tRex.startJump(this.currentSpeed);
+                    trexToManipulate.startJump(this.currentSpeed);
                 }
             }
 
             if (this.playing && !this.crashed && e == "JUMP") {
                 e.preventDefault();
-                if (this.tRex.jumping) {
+                if (trexToManipulate.jumping) {
                     // Speed drop, activated only when jump key is not pressed.
-                    this.tRex.setSpeedDrop();
-                } else if (!this.tRex.jumping && !this.tRex.ducking) {
+                    trexToManipulate.setSpeedDrop();
+                } else if (!trexToManipulate.jumping && !trexToManipulate.ducking) {
                     // Duck.
-                    this.tRex.setDuck(true);
+                    trexToManipulate.setDuck(true);
                 }
             }
         },
-
 
         /**
          * Process key up.
@@ -790,7 +851,7 @@ function gameLaunch() {
             this.tRex.update(100, Trex.status.CRASHED);
 
             handleEndGame();
-            
+
             // Game over panel.
             if (!this.gameOverPanel) {
                 this.gameOverPanel = new GameOverPanel(this.canvas,
@@ -1376,6 +1437,7 @@ function gameLaunch() {
                         speed += this.speedOffset;
                     }
                     this.xPos -= Math.floor((speed * FPS / 1000) * deltaTime);
+                    //console.log("obstacle xpos: " + Math.floor((speed * FPS / 1000) * deltaTime))
 
                     // Update frame
                     if (this.typeConfig.numFrames) {
@@ -1501,7 +1563,7 @@ function gameLaunch() {
      * @param {Object} spritePos Positioning within image sprite.
      * @constructor
      */
-    function Trex(canvas, spritePos, TrexId="", isPlayer = false) {
+    function Trex(canvas, spritePos, TrexId = "", isPlayer = false) {
         this.canvas = canvas;
         this.canvasCtx = canvas.getContext('2d');
         this.spritePos = spritePos;
@@ -2669,7 +2731,7 @@ function gameLaunch() {
             if (this.obstacleHistory.length > 1) {
                 this.obstacleHistory.splice(Runner.config.MAX_OBSTACLE_DUPLICATION);
             }
-            
+
         },
 
         /**

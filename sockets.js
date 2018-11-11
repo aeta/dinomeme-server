@@ -11,6 +11,8 @@ const hat = length => {
 }
 
 var gameStarted = false
+var referenceDate
+var nowEpoch = Date.now()
 
 /**
  * [id: PlayerObject]
@@ -19,6 +21,7 @@ var gameStarted = false
  *  - username
  * 	- votedStart
  *  - display
+ *  - distance
  */
 var players = {}
 
@@ -40,8 +43,13 @@ module.exports = {
 			const playerObject = {
 				username: "Untitled",
 				votedStart: false,
+
+				display: 0,
+        distance: 0,
+
 				isDead: false,
-				display: 0
+
+
 			}
 
 			players[id] = playerObject
@@ -93,14 +101,23 @@ module.exports = {
 				gameStarted = true
 				io.to('room').emit('game_start')
 
+
+				setInterval(playerPos, 500)
 				setInterval(obstacle, 5000)
-				console.log("shitfire")
 			})
+
+      socket.on('distance', (distance) => {
+        	playerObject.distance = distance
+      })
+
+
+
+
 
 
 
 			socket.on('event', (event, id) => {
-				console.log(event)
+				//console.log(event)
 				io.to('room').emit('event', event, id)
 			})
 		})
@@ -139,10 +156,27 @@ function compactPlayers() {
 
 const obstacle = () => {
 	if (gameStarted) {
-		console.log("Updating gap...")
+		//console.log("Updating gap...")
 		io.emit('gapthing', getRandomNum(250, 1000), getRandomNum(0, 2))
 	}
 }
+
+const playerPos = () => {
+	  io.to('room').emit('playerlist', players)
+}
+  //update player object
+
+// if (referenceDate == null || referenceDate == undefined) {
+//   referenceDate = new Date().value
+// } else {
+//   const now = new Date().value
+//   const delta = now - referenceDate
+//   if delta >= 500 {
+//     // send the thing
+//       io.to('room').emit('playerlist', players)
+//     referenceDate = now
+//   }
+// }
 
 /**
  * Get random number.
@@ -152,4 +186,5 @@ const obstacle = () => {
  */
 function getRandomNum(min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
+
 }
