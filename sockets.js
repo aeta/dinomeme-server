@@ -1,17 +1,25 @@
 let io
 
 const hat = length => {
-	var text = ''
-	var possible = 'abcdef0123456789'
+  var text = ''
+  var possible = 'abcdef0123456789'
 
-	for (var i = 0; i < length; i++)
-		text += possible.charAt(Math.floor(Math.random() * possible.length))
+  for (var i = 0; i < length; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length))
 
-	return text
+  return text
 }
 
 var gameStarted = false
-var playerlist = []
+
+/**
+ * [id: PlayerObject]
+ * 
+ * PlayerObject:
+ * 	- votedStart
+ *  - display
+ */
+var players = {}
 
 module.exports = {
 	init: server => {
@@ -22,16 +30,15 @@ module.exports = {
 			// generate an id for this socket
 			const id = hat(16)
 			const playerObject = {
-				id,
 				votedStart: false,
 				display: 0
 			}
-			playerlist.push(playerObject)
+			players[id] = playerObject
 
 			socket.join('room')
 
 			socket.emit('id', id)
-			io.to('room').emit('playerlist', playerlist)
+			io.to('room').emit('playerlist', players)
 
 			socket.on('voteStart', socket => {
 				if (gameStarted) return
@@ -74,7 +81,7 @@ module.exports = {
 }
 
 const obstacle = () => {
-	io.to('room').emit('obstacle')
+  io.to('room').emit('obstacle')
 
-	if (gameStarted) setTimeout(obstacle, Math.random() * 2000 + 500)
+  if (gameStarted) setTimeout(obstacle, Math.random() * 2000 + 500)
 }
