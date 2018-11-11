@@ -14,8 +14,9 @@ var gameStarted = false
 
 /**
  * [id: PlayerObject]
- * 
+ *
  * PlayerObject:
+ *  - username
  * 	- votedStart
  *  - display
  */
@@ -30,9 +31,17 @@ module.exports = {
 			// generate an id for this socket
 			const id = hat(16)
 			const playerObject = {
+				username: "Untitled",
 				votedStart: false,
 				display: 0
 			}
+			//disconnect player condition
+			 socket.on('disconnect', function() {
+				 console.log('Got disconnect: '+ id);
+				 
+				 //TODO: add disconnet handler for playerlist
+
+			 });
 			players[id] = playerObject
 
 			socket.join('room')
