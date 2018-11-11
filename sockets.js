@@ -26,8 +26,6 @@ module.exports = {
 	init: server => {
 		io = require('socket.io')(server)
 
-    setInterval(obstacle, 500)
-
 		io.on('connection', socket => {
 			if (gameStarted) {
 				socket.disconnect(true)
@@ -95,8 +93,8 @@ module.exports = {
 				gameStarted = true
 				io.to('room').emit('game_start')
 
-        console.log("shitfire")
-
+				setInterval(obstacle, 5000)
+        		console.log("shitfire")
 			})
 
 
@@ -141,10 +139,10 @@ function compactPlayers() {
 
 const obstacle = () => {
   // io.to('room').emit('obstacle')
-  // if (gameStarted) {
+  if (gameStarted) {
     console.log("Updating gap...")
-    io.emit('gapthing', getRandomNum(100,2000))
-  // }
+    io.emit('gapthing', getRandomNum(250, 1000), getRandomNum(0, 2))
+  }
 
   // if (gameStarted) setTimeout(obstacle, Math.random() * 2000 + 500)
 }

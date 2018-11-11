@@ -5,11 +5,13 @@
 var your_player_id
 var is_game_running
 var socket = io('http://192.168.2.129:3001/')
-var GAP = 5
+var GAP = 50
+var OBSTACLE_TYPE = 0
 
-socket.on('gapthing', (gapnumber) => {
+socket.on('gapthing', (gapnumber, obstacle_type) => {
 	GAP = gapnumber
-	console.log(GAP)
+	OBSTACLE_TYPE = obstacle_type
+	console.log("Gap Size: " + GAP + " | Type: " + OBSTACLE_TYPE)
 })
 
 socket.on('connect', () => {
