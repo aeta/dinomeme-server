@@ -376,7 +376,7 @@ function gameLaunch() {
                 this.spriteDef.TEXT_SPRITE, this.dimensions.WIDTH);
 
             // Draw t-rex
-            this.tRex = new Trex(this.canvas, this.spriteDef.TREX,id,true);
+            this.tRex = new Trex(this.canvas, this.spriteDef.TREX,true);
 
             this.outerContainerEl.appendChild(this.containerEl);
 
