@@ -29,3 +29,7 @@ socket.on('playerlist', (playerlist) => {
 	console.log(playerlist)
 
 })
+
+function clickVote() {
+	socket.emit('voteStart')
+}
