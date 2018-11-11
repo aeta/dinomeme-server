@@ -7,7 +7,7 @@ var your_player_id;
 
 /**
  * Send event to the websocket server.
- * @param {Event} event 
+ * @param {Event} event
  */
 function sendEvent(event) {
     console.log("sent")

@@ -1,16 +1,17 @@
 let io
 
 const hat = length => {
-	var text = ''
-	var possible = 'abcdef0123456789'
+  var text = ''
+  var possible = 'abcdef0123456789'
 
-	for (var i = 0; i < length; i++)
-		text += possible.charAt(Math.floor(Math.random() * possible.length))
+  for (var i = 0; i < length; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length))
 
-	return text
+  return text
 }
 
 var gameStarted = false
+
 /**
  * [id: PlayerObject]
  * 
@@ -80,7 +81,7 @@ module.exports = {
 }
 
 const obstacle = () => {
-	io.to('room').emit('obstacle')
+  io.to('room').emit('obstacle')
 
-	if (gameStarted) setTimeout(obstacle, Math.random() * 2000 + 500)
+  if (gameStarted) setTimeout(obstacle, Math.random() * 2000 + 500)
 }
