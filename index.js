@@ -2,6 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 // extract from chromium source code by @liuwayong
+var GLOBALSPEED = 6
+
+const startAcceleration = () => {
+  setInterval(() => {
+    GLOBALSPEED += 0.01
+  }, 10)
+}
 function gameLaunch() {
     'use strict';
     /**
@@ -387,6 +394,8 @@ function gameLaunch() {
             this.startListening();
             this.update();
 
+            //this.tRex.speedDrop = true
+
             window.addEventListener(Runner.events.RESIZE,
                 this.debounceResize.bind(this));
         },
@@ -543,6 +552,7 @@ function gameLaunch() {
                 }
 
                 // The horizon doesn't move until the intro is over.
+                this.currentSpeed = GLOBALSPEED
                 if (this.playingIntro) {
                     this.horizon.update(0, this.currentSpeed, hasObstacles);
                 } else {
