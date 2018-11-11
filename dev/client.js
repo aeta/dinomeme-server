@@ -4,7 +4,7 @@
 
 var your_player_id
 var is_game_running
-var socket = io('http://192.168.2.129:3001/')
+var socket = io('http://192.168.2.174:3001/')
 var GAP = 50
 var OBSTACLE_TYPE = 0
 
@@ -50,7 +50,7 @@ socket.on('game_over', () => {
 
 // //recieve list of connected players
 socket.on('playerlist', (playerlist) => {
-	console.log(playerlist)
+	//console.log("updated player list")
 	Runner.instance_.updatePlayerList(playerlist)
 	checkVoteCount(playerlist)
 })
@@ -72,7 +72,7 @@ function checkVoteCount(dict) {
 		voteCount += 1
 	}
 
-	console.log (voteCount)
+//	console.log (voteCount)
 	document.getElementById('voteCount').textContent = voteCount + " / "
 	document.getElementById("totalPlayers").textContent = totalPlayers
 
@@ -87,5 +87,5 @@ function clickVote() {
 
 function clickUpdateNickname() {
 	const text = document.getElementById('onchange').value
-	console.log(text)
+//	console.log(text)
 }

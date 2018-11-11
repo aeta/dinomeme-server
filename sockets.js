@@ -43,13 +43,13 @@ module.exports = {
 			const playerObject = {
 				username: "Untitled",
 				votedStart: false,
-<<<<<<< HEAD
+
 				display: 0,
         distance: 0,
-=======
+
 				isDead: false,
-				display: 0
->>>>>>> master
+
+
 			}
 
 			players[id] = playerObject
@@ -101,8 +101,9 @@ module.exports = {
 				gameStarted = true
 				io.to('room').emit('game_start')
 
-<<<<<<< HEAD
-				setInterval(obstacle, 500)
+
+				setInterval(playerPos, 500)
+				setInterval(obstacle, 5000)
 			})
 
       socket.on('distance', (distance) => {
@@ -110,16 +111,13 @@ module.exports = {
       })
 
 
-=======
-				setInterval(obstacle, 5000)
-				console.log("shitfire")
-			})
 
->>>>>>> master
+
+
 
 
 			socket.on('event', (event, id) => {
-				console.log(event)
+				//console.log(event)
 				io.to('room').emit('event', event, id)
 			})
 		})
@@ -158,16 +156,16 @@ function compactPlayers() {
 
 const obstacle = () => {
 	if (gameStarted) {
-		console.log("Updating gap...")
+		//console.log("Updating gap...")
 		io.emit('gapthing', getRandomNum(250, 1000), getRandomNum(0, 2))
 	}
 }
 
-<<<<<<< HEAD
-  if (gameStarted) setTimeout(obstacle, Math.random() * 2000 + 500)
-
+const playerPos = () => {
+	  io.to('room').emit('playerlist', players)
+}
   //update player object
-  io.to('room').emit('playerlist', players)
+
 // if (referenceDate == null || referenceDate == undefined) {
 //   referenceDate = new Date().value
 // } else {
@@ -179,7 +177,7 @@ const obstacle = () => {
 //     referenceDate = now
 //   }
 // }
-=======
+
 /**
  * Get random number.
  * @param {number} min
@@ -188,5 +186,5 @@ const obstacle = () => {
  */
 function getRandomNum(min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
->>>>>>> master
+
 }

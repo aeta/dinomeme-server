@@ -467,18 +467,22 @@ function gameLaunch() {
         // make other players sprites
         updatePlayerList: function(players) {
 
+
+
+
             for (var key in players) {
 
               var value = players[key]
-              if (value == null) {
+              if (!value) {
                 continue
               }
               if (remote_trexes[key] == null) {
                 remote_trexes[key] = new Trex(this.canvas, this.spriteDef.TREX, key, false)
               }
               else {
-                var position = value.distance - players[your_player_id]
+                var position = value.distance - players[your_player_id].distance
                 remote_trexes[key].xpos += position
+
               }
 
             }
@@ -641,7 +645,7 @@ function gameLaunch() {
                     if (frameCount % 15 == 0) {
                       frameCount = 0
                       socket.emit('distance', actualDistance)
-                      console.log("distance: " + actualDistance)
+                      //console.log("distance: " + actualDistance)
                     }
                     frameCount += 1;
 
@@ -735,6 +739,7 @@ function gameLaunch() {
          * @param {string} e
          */
         onWebSocketEvent: function (e, playerID) {
+
             console.log("Web Socket Event: " + e)
             var trexToManipulate
 
