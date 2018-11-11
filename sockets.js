@@ -77,7 +77,7 @@ module.exports = {
 			socket.on('disconnect', function () {
 				console.log('Got disconnect: ' + id);
 
-				players[id] = undefined
+				delete players[id]
 				io.to('room').emit('playerlist', players)
 			});
 

@@ -9,83 +9,142 @@ var GAP = 50
 var OBSTACLE_TYPE = 0
 
 socket.on('gapthing', (gapnumber, obstacle_type) => {
-	GAP = gapnumber
-	OBSTACLE_TYPE = obstacle_type
-	console.log("Gap Size: " + GAP + " | Type: " + OBSTACLE_TYPE)
+  GAP = gapnumber
+  OBSTACLE_TYPE = obstacle_type
+  console.log("Gap Size: " + GAP + " | Type: " + OBSTACLE_TYPE)
 })
 
 socket.on('connect', () => {
-	console.log("Connected.")
-	document.getElementById("offlineStatusMessage").style.visibility = "hidden";
+  console.log("Connected.")
+  //document.getElementById("offlineStatusMessage").style.visibility = "hidden";
 })
 
 socket.on('id', (id) => {
-	console.log("Your id is " + id)
-	your_player_id = id
+  console.log("Your id is " + id)
+  your_player_id = id
 })
 
 socket.on('event', (event, id) => {
-	if (this.id == your_player_id) {
-		console.log("You did something.")
-	} else {
-		console.log(id + " did something.")
-	}
+  if (this.id == your_player_id) {
+    console.log("You did something.")
+  } else {
+    console.log(id + " did something.")
+  }
 
-	recieveEvent(event, id)
+  recieveEvent(event, id)
 })
 
 socket.on('game_start', () => {
-	console.log("starting game");
-	is_game_running = true
-	recieveEvent('JUMP', your_player_id)
+  console.log("starting game");
+  is_game_running = true
+  recieveEvent('JUMP', your_player_id)
 
-	document.getElementById("messageBox").style.visibility="hidden";
+  document.getElementById("messageBox").style.visibility = "hidden";
 })
 
 socket.on('game_over', () => {
-	console.log("Everyone's dead :(((")
-	is_game_running = false
-	// TODO: reset state.
+  console.log("Everyone's dead :(((")
+  is_game_running = false
+  // TODO: reset state.
 })
 
 // //recieve list of connected players
 socket.on('playerlist', (playerlist) => {
-	//console.log("updated player list")
-	Runner.instance_.updatePlayerList(playerlist)
-	checkVoteCount(playerlist)
+  //console.log("updated player list")
+  Runner.instance_.updatePlayerList(playerlist)
+  checkVoteCount(playerlist)
+	updateScore(playerlist)
 })
 
 function handleEndGame() {
-	socket.emit('im_dead')
+  socket.emit('im_dead')
 }
 
 function checkVoteCount(dict) {
-	var voteCount = 0;
-	var totalPlayers = 0;
-	for(var key in dict) {
-  var value = dict[key];
-	if (value == null) {
-		continue
-	}
-	totalPlayers +=1
-	if (value.votedStart) {
-		voteCount += 1
-	}
+  var voteCount = 0;
+  var totalPlayers = 0;
+  for (var key in dict) {
+    var value = dict[key];
+    if (value == null) {
+      continue
+    }
+    totalPlayers += 1
+    if (value.votedStart) {
+      voteCount += 1
+    }
 
-//	console.log (voteCount)
-	document.getElementById('voteCount').textContent = voteCount + " / "
-	document.getElementById("totalPlayers").textContent = totalPlayers
+    //	console.log (voteCount)
+    document.getElementById('voteCount').textContent = voteCount + " / "
+    document.getElementById("totalPlayers").textContent = totalPlayers
 
-  // do something with "key" and "value" variables
+    // do something with "key" and "value" variables
 
-}
+  }
 }
 
 function clickVote() {
-	socket.emit('voteStart')
+  socket.emit('voteStart')
 }
 
 function clickUpdateNickname() {
-	const text = document.getElementById('onchange').value
-//	console.log(text)
+  const text = document.getElementById('onchange').value
+  //	console.log(text)
+}
+
+function updateScore(dict) {
+	var array = []
+
+	for( key in dict) {
+		array.push({
+			id: key,
+			distance: dict[key].distance
+		})
+	}
+
+	array.sort((a, b) => a.distance - b.distance)
+
+	for (var value of array) {
+		const key = value.id
+		if (value == null) {
+			continue
+		}
+		if (document.getElementById(key)== null) {
+			var node = document.createElement("tr");
+			node.setAttribute("id",key)
+
+			document.getElementById("highscore").appendChild(node);
+
+
+			var node1 = document.createElement("td");
+			node1.setAttribute("id","userid")
+			if (your_player_id == key) {
+				var textnode = document.createTextNode("you: " +key);
+			}
+			else {
+				var textnode = document.createTextNode(key);
+			}  // Create a <li> node
+			        // Create a text node
+			node1.appendChild(textnode);                              // Append the text to <li>
+			document.getElementById(key).appendChild(node1);
+
+			var node2 = document.createElement("td");
+			node2.setAttribute("id","score")                     // Create a <li> node
+			var textnode = document.createTextNode(value.distance);         // Create a text node
+			node2.appendChild(textnode);                              // Append the text to <li>
+			document.getElementById(key).appendChild(node2);
+
+		}
+		else {
+			$("#"+key+'> #score').html(value.distance);
+			//console.log(document.getElementById(key))
+		}
+
+		//document.getElementById("key-"+key).textContent=
+		 // Create a <li> node
+
+
+
+
+
+	}
 }

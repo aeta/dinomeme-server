@@ -480,8 +480,14 @@ function gameLaunch() {
                 remote_trexes[key] = new Trex(this.canvas, this.spriteDef.TREX, key, false)
               }
               else {
-                var position = value.distance - players[your_player_id].distance
-                remote_trexes[key].xpos += position
+                if (!value.distance) {
+                  continue
+                }
+                else {
+                  var position = value.distance - players[your_player_id].distance
+                  remote_trexes[key].xpos += position
+                }
+
 
               }
 
