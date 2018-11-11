@@ -1,80 +1,87 @@
 let io
 
 const hat = length => {
-	var text = ''
-	var possible = 'abcdef0123456789'
+  var text = ''
+  var possible = 'abcdef0123456789'
 
-	for (var i = 0; i < length; i++)
-		text += possible.charAt(Math.floor(Math.random() * possible.length))
+  for (var i = 0; i < length; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length))
 
-	return text
+  return text
 }
 
 var gameStarted = false
 var playerlist = []
 
 module.exports = {
-	init: server => {
-		io = require('socket.io')(server)
+  init: server => {
+    io = require('socket.io')(server)
 
-		io.on('connection', socket => {
-			console.log('connect')
-			// generate an id for this socket
-			const id = hat(16)
-			const playerObject = {
-				id,
-				votedStart: false,
-				display: 0
-			}
-			playerlist.push(playerObject)
+    io.on('connection', socket => {
+        console.log('connect')
+        // generate an id for this socket
+        const id = hat(16)
+        const playerObject = {
+          id,
+          votedStart: false,
+          display: 0
+        }
+        //disconnect player condition
+        socket.on('disconnect', function() {
+          console.log('Got disconnect!');
 
-			socket.join('room')
+					//TODO: add disconnet handler for playerlist
 
-			socket.emit('id', id)
-			io.to('room').emit('playerlist', playerlist)
+        });
+      }
+      playerlist.push(playerObject)
 
-			socket.on('voteStart', socket => {
-				if (gameStarted) return
+      socket.join('room')
 
-				playerObject.votedStart = true
+      socket.emit('id', id) io.to('room').emit('playerlist', playerlist)
 
-				// check if everyone voted
-				for (var i = 0; i < players.length; i++) {
-					if (!players[i].votedStart) return
-				}
+      socket.on('voteStart', socket => {
+        if (gameStarted) return
 
-				// start the game
-				gameStarted = true
-				io.to('room').emit('startGame')
+        playerObject.votedStart = true
 
-				setInterval(obstacle, 3000)
-			})
+        // check if everyone voted
+        for (var i = 0; i < players.length; i++) {
+          if (!players[i].votedStart) return
+        }
 
-			socket.on('event', (event) => {
-				console.log(event)
-				io.to('room').emit('event', event, id)
-			})
+        // start the game
+        gameStarted = true
+        io.to('room').emit('startGame')
 
-			socket.on('jump', () => {
-				if (!gameStarted) return
-				io.to('room').emit('jump', id)
-			})
+        setInterval(obstacle, 3000)
+      })
 
-			socket.on('crouch', () => {
-				if (!gameStarted) return
-				io.to('room').emit('crouch', id)
-			})
+      socket.on('event', (event) => {
+        console.log(event)
+        io.to('room').emit('event', event, id)
+      })
 
-			socket.on('obstacle', () => {
-				if (!gameStarted) return
-				io.to('room').emit('obstacle', id)
-			})
-		})
-	}
+      socket.on('jump', () => {
+        if (!gameStarted) return
+        io.to('room').emit('jump', id)
+      })
+
+      socket.on('crouch', () => {
+        if (!gameStarted) return
+        io.to('room').emit('crouch', id)
+      })
+
+      socket.on('obstacle', () => {
+        if (!gameStarted) return
+        io.to('room').emit('obstacle', id)
+      })
+    })
+}
 }
 
 const obstacle = () => {
-	io.to('room').emit('obstacle')
+  io.to('room').emit('obstacle')
 
-	if (gameStarted) setTimeout(obstacle, Math.random() * 2000 + 500)
+  if (gameStarted) setTimeout(obstacle, Math.random() * 2000 + 500)
 }

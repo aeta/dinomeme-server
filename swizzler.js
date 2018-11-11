@@ -1,4 +1,3 @@
-var socket = io('http://localhost:3001')
 
 socket.on('connect', () => {
     console.log("connected")
@@ -6,7 +5,7 @@ socket.on('connect', () => {
 
 /**
  * Send event to the websocket server.
- * @param {Event} event 
+ * @param {Event} event
  */
 function sendEvent(event) {
     console.log(event)

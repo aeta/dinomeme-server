@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="index.css">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <script src="index.js"></script>
+
 </head>
 
 <body id="t" class="offline" style="overflow: hidden;">
@@ -31,6 +32,11 @@
     </div>
 
     <script src="assets/js/socket.io.slim.js"></script>
+    <script>
+    const socket = io('http://localhost:3001/')
+    </script>
+      <script src="client.js"></script>
+
     <script src="swizzler.js"></script>
 </body>
 
