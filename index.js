@@ -789,6 +789,8 @@ function gameLaunch() {
 
             this.tRex.update(100, Trex.status.CRASHED);
 
+            handleEndGame();
+            
             // Game over panel.
             if (!this.gameOverPanel) {
                 this.gameOverPanel = new GameOverPanel(this.canvas,

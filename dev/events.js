@@ -7,6 +7,8 @@
 * @param {Event} event
 */
 function sendEvent(keyEvent) {
+    if (!is_game_running) return
+    
     const eventsKey =  {
         JUMP: { '38': 1, '32': 1 },  // Up, spacebar
         DUCK: { '40': 1 },  // Down
