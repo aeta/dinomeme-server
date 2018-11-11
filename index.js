@@ -2,13 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 // extract from chromium source code by @liuwayong
-var GLOBALSPEED = 6
+//var GLOBALSPEED = 6
 
-const startAcceleration = () => {
-  setInterval(() => {
-    GLOBALSPEED += 0.01
-  }, 10)
-}
+//const startAcceleration = () => {
+//  setInterval(() => {
+//    GLOBALSPEED += 0.000000000001
+//  }, 10000)
+//}
 function gameLaunch() {
     'use strict';
     /**
@@ -110,7 +110,7 @@ function gameLaunch() {
      * @enum {number}
      */
     Runner.config = {
-        ACCELERATION: 0.001,
+        ACCELERATION: 0.00001,
         BG_CLOUD_SPEED: 0.2,
         BOTTOM_PAD: 10,
         CLEAR_TIME: 3000,
@@ -520,7 +520,7 @@ function gameLaunch() {
             window.addEventListener(Runner.events.FOCUS,
                 this.onVisibilityChange.bind(this));
 
-                startAcceleration()
+//                startAcceleration()
         },
 
         clearCanvas: function () {
@@ -554,7 +554,7 @@ function gameLaunch() {
                 }
 
                 // The horizon doesn't move until the intro is over.
-                this.currentSpeed = GLOBALSPEED
+  //              this.currentSpeed = GLOBALSPEED
                 if (this.playingIntro) {
                     this.horizon.update(0, this.currentSpeed, hasObstacles);
                 } else {
@@ -574,8 +574,8 @@ function gameLaunch() {
                         this.currentSpeed += this.config.ACCELERATION;
                     }
                 } else {
-                    GLOBALSPEED -= 0.1
-                    if (GLOBALSPEED <0) {
+                    this.currentSpeed -= 0.1
+                    if (this.currentSpeed < 0) {
                       this.gameOver()
                     }
                 }
