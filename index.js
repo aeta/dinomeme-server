@@ -519,6 +519,8 @@ function gameLaunch() {
 
             window.addEventListener(Runner.events.FOCUS,
                 this.onVisibilityChange.bind(this));
+
+                startAcceleration()
         },
 
         clearCanvas: function () {
