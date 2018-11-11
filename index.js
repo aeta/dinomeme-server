@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 // extract from chromium source code by @liuwayong
-(function () {
+function gameLaunch() {
     'use strict';
     /**
      * T-Rex runner.
@@ -467,9 +467,9 @@
                     'from { width:' + Trex.config.WIDTH + 'px }' +
                     'to { width: ' + this.dimensions.WIDTH + 'px }' +
                     '}';
-                
-                // create a style sheet to put the keyframe rule in 
-                // and then place the style sheet in the html head    
+
+                // create a style sheet to put the keyframe rule in
+                // and then place the style sheet in the html head
                 var sheet = document.createElement('style');
                 sheet.innerHTML = keyframes;
                 document.head.appendChild(sheet);
@@ -1487,7 +1487,7 @@
      * @param {Object} spritePos Positioning within image sprite.
      * @constructor
      */
-    function Trex(canvas, spritePos) {
+    function Trex(canvas, spritePos, id="") {
         this.canvas = canvas;
         this.canvasCtx = canvas.getContext('2d');
         this.spritePos = spritePos;
@@ -1513,6 +1513,8 @@
         this.speedDrop = false;
         this.jumpCount = 0;
         this.jumpspotX = 0;
+        //socket io multiplayer id
+        this.id = id;
 
         this.init();
     };
@@ -1615,7 +1617,7 @@
                 Runner.config.BOTTOM_PAD;
             this.yPos = this.groundYPos;
             this.minJumpHeight = this.groundYPos - this.config.MIN_JUMP_HEIGHT;
-
+            this.id = "";
             this.draw(0, 0);
             this.update(0, Trex.status.WAITING);
         },
@@ -2705,8 +2707,8 @@
                 this.dimensions.WIDTH));
         }
     };
-})();
-
+};
+gameLaunch();
 
 function onDocumentLoad() {
     new Runner('.interstitial-wrapper');

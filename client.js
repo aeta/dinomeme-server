@@ -6,11 +6,3 @@ socket.on('id', (id) => {
 	console.log(id)
 
 })
-socket.on('jump', (id) => {
-	
-	console.log(id)
-
-})
-
-
-//socket.emit('voteStart')

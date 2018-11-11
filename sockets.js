@@ -44,7 +44,7 @@ module.exports = {
 				gameStarted = true
 				io.to('room').emit('startGame')
 
-				setInterval(obstacle, 3)
+				setInterval(obstacle, 3000)
 			})
 
 			socket.on('jump', () => {
