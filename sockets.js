@@ -1,13 +1,13 @@
 let io
 
 const hat = length => {
-  var text = ''
-  var possible = 'abcdef0123456789'
+	var text = ''
+	var possible = 'abcdef0123456789'
 
-  for (var i = 0; i < length; i++)
-    text += possible.charAt(Math.floor(Math.random() * possible.length))
+	for (var i = 0; i < length; i++)
+		text += possible.charAt(Math.floor(Math.random() * possible.length))
 
-  return text
+	return text
 }
 
 var gameStarted = false
@@ -43,10 +43,14 @@ module.exports = {
 			const playerObject = {
 				username: "Untitled",
 				votedStart: false,
+<<<<<<< HEAD
 				display: 0,
         distance: 0,
+=======
+				isDead: false,
+				display: 0
+>>>>>>> master
 			}
-
 
 			players[id] = playerObject
 
@@ -57,31 +61,47 @@ module.exports = {
 
 			io.to('room').emit('playerlist', players)
 
-      	//disconnect player condition
-			socket.on('disconnect', function() {
-				console.log('Got disconnect: '+ id);
+			socket.on('im_dead', function () {
+				console.log("Recieved death message")
+				players[id].isDead = true
 
-				players[id] = null
+				if (isEveryoneDead()) {
+					console.log("Everyone's dead :(")
+					io.to('room').emit('game_over')
+					resetGameState()
+					io.to('room').emit('playerlist', players)
+				}
+			})
+
+			//disconnect player condition
+			socket.on('disconnect', function () {
+				console.log('Got disconnect: ' + id);
+
+				players[id] = undefined
 				io.to('room').emit('playerlist', players)
 			});
 
 			socket.on('voteStart', socket => {
 				if (gameStarted) return
 
-        console.log("voted START: "+id)
+				console.log("voted START: " + id)
 
 				playerObject.votedStart = true
-        io.to('room').emit('playerlist', players)
+				io.to('room').emit('playerlist', players)
 
 				// check if everyone voted
-				for (var i = 0; i < players.length; i++) {
-					if (!players[i].votedStart) return
+				var someoneDidntVoteStart = false
+				for (var key in players) {
+					if (players[key] == null) continue
+					if (!players[key].votedStart) someoneDidntVoteStart = true
 				}
+				if (someoneDidntVoteStart) return
 
 				// start the game
 				gameStarted = true
-				io.to('room').emit('startGame')
+				io.to('room').emit('game_start')
 
+<<<<<<< HEAD
 				setInterval(obstacle, 500)
 			})
 
@@ -90,6 +110,12 @@ module.exports = {
       })
 
 
+=======
+				setInterval(obstacle, 5000)
+				console.log("shitfire")
+			})
+
+>>>>>>> master
 
 
 			socket.on('event', (event, id) => {
@@ -100,9 +126,44 @@ module.exports = {
 	}
 }
 
-const obstacle = () => {
-  io.to('room').emit('obstacle')
+function isEveryoneDead() {
+	for (var id in players)
+		if (players[id] == null) continue
+	if (!players[id].isDead) return false
 
+	return true
+}
+
+function resetGameState() {
+	compactPlayers()
+	for (var key in players) {
+		players[key].votedStart = false
+		players[key].isDead = false
+	}
+
+	gameStarted = false
+}
+
+/**
+ * This will remove all null/undefined player objects.
+ */
+function compactPlayers() {
+	for (var id in players) {
+		var compactPlayers = {}
+		if (players[id] == null || players[id] == undefined) continue
+		compactPlayers[id] = players[id]
+		players = compactPlayers
+	}
+}
+
+const obstacle = () => {
+	if (gameStarted) {
+		console.log("Updating gap...")
+		io.emit('gapthing', getRandomNum(250, 1000), getRandomNum(0, 2))
+	}
+}
+
+<<<<<<< HEAD
   if (gameStarted) setTimeout(obstacle, Math.random() * 2000 + 500)
 
   //update player object
@@ -118,4 +179,14 @@ const obstacle = () => {
 //     referenceDate = now
 //   }
 // }
+=======
+/**
+ * Get random number.
+ * @param {number} min
+ * @param {number} max
+ * @param {number}
+ */
+function getRandomNum(min, max) {
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+>>>>>>> master
 }

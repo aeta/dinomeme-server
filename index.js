@@ -613,7 +613,7 @@ function gameLaunch() {
                         this.currentSpeed += this.config.ACCELERATION;
                     }
                 } else {
-                    this.currentSpeed -= 0.5
+                    this.currentSpeed -= 0.3
                     if (this.currentSpeed < 0) {
                         this.gameOver()
                     }
@@ -844,6 +844,8 @@ function gameLaunch() {
             this.distanceMeter.acheivement = false;
 
             this.tRex.update(100, Trex.status.CRASHED);
+
+            handleEndGame();
 
             // Game over panel.
             if (!this.gameOverPanel) {
@@ -1458,10 +1460,12 @@ function gameLaunch() {
              * @return {number} The gap size.
              */
             getGap: function (gapCoefficient, speed) {
-                var minGap = Math.round(this.width * speed +
-                    this.typeConfig.minGap * gapCoefficient);
-                var maxGap = Math.round(minGap * Obstacle.MAX_GAP_COEFFICIENT);
-                return getRandomNum(minGap, maxGap);
+                // var minGap = Math.round(this.width * speed +
+                //     this.typeConfig.minGap * gapCoefficient);
+                //  var maxGap = Math.round(minGap * Obstacle.MAX_GAP_COEFFICIENT);
+              //  return getRandomNum(minGap, maxGap);
+
+              return GAP
             },
 
             /**
@@ -2707,27 +2711,22 @@ function gameLaunch() {
          * @param {number} currentSpeed
          */
         addNewObstacle: function (currentSpeed) {
-            var obstacleTypeIndex = getRandomNum(0, Obstacle.types.length - 1);
-            var obstacleType = Obstacle.types[obstacleTypeIndex];
+            // var obstacleTypeIndex = getRandomNum(0, Obstacle.types.length - 1);
+            // var obstacleType = Obstacle.types[obstacleTypeIndex];
+            var obstacleType = Obstacle.types[OBSTACLE_TYPE]
 
-            // Check for multiples of the same type of obstacle.
-            // Also check obstacle is available at current speed.
-            if (this.duplicateObstacleCheck(obstacleType.type) ||
-                currentSpeed < obstacleType.minSpeed) {
-                this.addNewObstacle(currentSpeed);
-            } else {
-                var obstacleSpritePos = this.spritePos[obstacleType.type];
+            var obstacleSpritePos = this.spritePos[obstacleType.type];
 
-                this.obstacles.push(new Obstacle(this.canvasCtx, obstacleType,
-                    obstacleSpritePos, this.dimensions,
-                    this.gapCoefficient, currentSpeed, obstacleType.width));
+            this.obstacles.push(new Obstacle(this.canvasCtx, obstacleType,
+                obstacleSpritePos, this.dimensions,
+                this.gapCoefficient, currentSpeed, obstacleType.width));
 
-                this.obstacleHistory.unshift(obstacleType.type);
+            this.obstacleHistory.unshift(obstacleType.type);
 
-                if (this.obstacleHistory.length > 1) {
-                    this.obstacleHistory.splice(Runner.config.MAX_OBSTACLE_DUPLICATION);
-                }
+            if (this.obstacleHistory.length > 1) {
+                this.obstacleHistory.splice(Runner.config.MAX_OBSTACLE_DUPLICATION);
             }
+
         },
 
         /**

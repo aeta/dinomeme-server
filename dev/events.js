@@ -7,6 +7,8 @@
 * @param {Event} event
 */
 function sendEvent(keyEvent) {
+    if (!is_game_running) return
+    
     const eventsKey =  {
         JUMP: { '38': 1, '32': 1 },  // Up, spacebar
         DUCK: { '40': 1 },  // Down
@@ -27,5 +29,5 @@ function sendEvent(keyEvent) {
 }
 
 function recieveEvent(event, id) {
-    Runner.instance_.onWebSocketEvent(event, id)
+    if (id == your_player_id) Runner.instance_.onWebSocketEvent(event, id)
 }
