@@ -16,6 +16,7 @@ socket.on('gapthing', (gapnumber, obstacle_type) => {
 
 socket.on('connect', () => {
 	console.log("Connected.")
+	document.getElementById("offlineStatusMessage").style.visibility = "hidden";
 })
 
 socket.on('id', (id) => {
@@ -81,4 +82,9 @@ function checkVoteCount(dict) {
 
 function clickVote() {
 	socket.emit('voteStart')
+}
+
+function clickUpdateNickname() {
+	const text = document.getElementById('onchange').value
+	console.log(text)
 }

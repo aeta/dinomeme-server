@@ -1,13 +1,13 @@
 let io
 
 const hat = length => {
-  var text = ''
-  var possible = 'abcdef0123456789'
+	var text = ''
+	var possible = 'abcdef0123456789'
 
-  for (var i = 0; i < length; i++)
-    text += possible.charAt(Math.floor(Math.random() * possible.length))
+	for (var i = 0; i < length; i++)
+		text += possible.charAt(Math.floor(Math.random() * possible.length))
 
-  return text
+	return text
 }
 
 var gameStarted = false
@@ -53,7 +53,7 @@ module.exports = {
 
 			io.to('room').emit('playerlist', players)
 
-			socket.on('im_dead', function() {
+			socket.on('im_dead', function () {
 				console.log("Recieved death message")
 				players[id].isDead = true
 
@@ -65,21 +65,21 @@ module.exports = {
 				}
 			})
 
-      	//disconnect player condition
-			socket.on('disconnect', function() {
-				console.log('Got disconnect: '+ id);
+			//disconnect player condition
+			socket.on('disconnect', function () {
+				console.log('Got disconnect: ' + id);
 
-				players[id] = null
+				players[id] = undefined
 				io.to('room').emit('playerlist', players)
 			});
 
 			socket.on('voteStart', socket => {
 				if (gameStarted) return
 
-        console.log("voted START: "+id)
+				console.log("voted START: " + id)
 
 				playerObject.votedStart = true
-        io.to('room').emit('playerlist', players)
+				io.to('room').emit('playerlist', players)
 
 				// check if everyone voted
 				var someoneDidntVoteStart = false
@@ -87,14 +87,14 @@ module.exports = {
 					if (players[key] == null) continue
 					if (!players[key].votedStart) someoneDidntVoteStart = true
 				}
-				if (someoneDidntVoteStart) return 
+				if (someoneDidntVoteStart) return
 
 				// start the game
 				gameStarted = true
 				io.to('room').emit('game_start')
 
 				setInterval(obstacle, 5000)
-        		console.log("shitfire")
+				console.log("shitfire")
 			})
 
 
@@ -110,7 +110,7 @@ module.exports = {
 function isEveryoneDead() {
 	for (var id in players)
 		if (players[id] == null) continue
-		if (!players[id].isDead) return false
+	if (!players[id].isDead) return false
 
 	return true
 }
@@ -138,13 +138,10 @@ function compactPlayers() {
 }
 
 const obstacle = () => {
-  // io.to('room').emit('obstacle')
-  if (gameStarted) {
-    console.log("Updating gap...")
-    io.emit('gapthing', getRandomNum(250, 1000), getRandomNum(0, 2))
-  }
-
-  // if (gameStarted) setTimeout(obstacle, Math.random() * 2000 + 500)
+	if (gameStarted) {
+		console.log("Updating gap...")
+		io.emit('gapthing', getRandomNum(250, 1000), getRandomNum(0, 2))
+	}
 }
 
 /**
@@ -154,5 +151,5 @@ const obstacle = () => {
  * @param {number}
  */
 function getRandomNum(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+	return Math.floor(Math.random() * (max - min + 1)) + min;
 }

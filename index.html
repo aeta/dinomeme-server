@@ -33,16 +33,17 @@
             </template>
         </div>
     </div>
+
     <div class="multiplayer-info">
-      <button onclick="clickVote()">Vote to start</button>
-      <div id="voteCount">
+        <form>
+            <input type="button" value="Ready Up." onclick="clickVote()">            
+        </form>
 
-      </div>
-      <div id="totalPlayers">
+        <div id="offlineStatusMessage">You are not connected.</div>
 
-      </div>
-      players ready
-    </div>
+        <div style="height: 2em"></div>
+
+        <div><span id="voteCount">--</span><span id="totalPlayers">--</span> players ready.</div>
 </body>
 
 <script>

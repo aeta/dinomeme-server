@@ -29,5 +29,5 @@ function sendEvent(keyEvent) {
 }
 
 function recieveEvent(event, id) {
-    Runner.instance_.onWebSocketEvent(event, id)
+    if (id == your_player_id) Runner.instance_.onWebSocketEvent(event, id)
 }
