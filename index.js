@@ -383,7 +383,8 @@ function gameLaunch() {
                 this.spriteDef.TEXT_SPRITE, this.dimensions.WIDTH);
 
             // Draw t-rex
-            this.tRex = new Trex(this.canvas, this.spriteDef.TREX,true);
+            this.tRex = new Trex(this.canvas, this.spriteDef.TREX, true, true); 
+            this.remote_trexes = {}
 
             this.outerContainerEl.appendChild(this.containerEl);
 
@@ -462,6 +463,29 @@ function gameLaunch() {
             }
         },
 
+        updatePlayerList: function(players) {
+            for (var key in players) {
+                this.remote_trexes[key] = new Trex(this.canvas, this.spriteDef.TREX, true, false)
+            }
+        },
+
+        // updatePlayer: function(event, id) {
+        //     var trexToManipulate
+        //     if (id == your_player_id) {
+        //         trexToManipulate = this.tRex
+        //     } else {
+        //         trexToManipulate = this.remote_trexes[id]
+        //     }
+
+        //     if (trexToManipulate == null || trexToManipulate == undefined) {
+        //         console.log("No trex to manipulate :(")
+        //         return
+        //     }
+
+        //     trexToManipulate.
+
+        // },
+
         /**
          * Play the game intro.
          * Canvas container width expands out to the full width.
@@ -520,7 +544,7 @@ function gameLaunch() {
             window.addEventListener(Runner.events.FOCUS,
                 this.onVisibilityChange.bind(this));
 
-//                startAcceleration()
+            //                startAcceleration()
         },
 
         clearCanvas: function () {
@@ -554,7 +578,7 @@ function gameLaunch() {
                 }
 
                 // The horizon doesn't move until the intro is over.
-  //              this.currentSpeed = GLOBALSPEED
+                //              this.currentSpeed = GLOBALSPEED
                 if (this.playingIntro) {
                     this.horizon.update(0, this.currentSpeed, hasObstacles);
                 } else {
@@ -576,7 +600,7 @@ function gameLaunch() {
                 } else {
                     this.currentSpeed -= 0.1
                     if (this.currentSpeed < 0) {
-                      this.gameOver()
+                        this.gameOver()
                     }
                 }
 
@@ -687,34 +711,41 @@ function gameLaunch() {
          */
         onWebSocketEvent: function (e, playerID) {
             console.log("Web Socket Event: " + e)
+            var trexToManipulate
+
+            if (playerID == your_player_id) {
+                trexToManipulate = this.tRex
+            } else {
+                trexToManipulate = this.remote_trexes[playerID]
+            }
+
             if (!this.crashed && e == "JUMP") {
                 if (!this.playing) {
                     this.loadSounds();
-                        this.playing = true;
-                        this.update();
-                        if (window.errorPageController) {
-                            errorPageController.trackEasterEgg();
-                        }
+                    this.playing = true;
+                    this.update();
+                    if (window.errorPageController) {
+                        errorPageController.trackEasterEgg();
                     }
+                }
                 //  Play sound effect and jump on starting the game for the first time.
-                if (!this.tRex.jumping && !this.tRex.ducking) {
+                if (!trexToManipulate.jumping && !trexToManipulate.ducking) {
                     this.playSound(this.soundFx.BUTTON_PRESS);
-                    this.tRex.startJump(this.currentSpeed);
+                    trexToManipulate.startJump(this.currentSpeed);
                 }
             }
 
             if (this.playing && !this.crashed && e == "JUMP") {
                 e.preventDefault();
-                if (this.tRex.jumping) {
+                if (trexToManipulate.jumping) {
                     // Speed drop, activated only when jump key is not pressed.
-                    this.tRex.setSpeedDrop();
-                } else if (!this.tRex.jumping && !this.tRex.ducking) {
+                    trexToManipulate.setSpeedDrop();
+                } else if (!trexToManipulate.jumping && !trexToManipulate.ducking) {
                     // Duck.
-                    this.tRex.setDuck(true);
+                    trexToManipulate.setDuck(true);
                 }
             }
         },
-
 
         /**
          * Process key up.
@@ -1497,7 +1528,7 @@ function gameLaunch() {
      * @param {Object} spritePos Positioning within image sprite.
      * @constructor
      */
-    function Trex(canvas, spritePos, TrexId="", isPlayer = false) {
+    function Trex(canvas, spritePos, TrexId = "", isPlayer = false) {
         this.canvas = canvas;
         this.canvasCtx = canvas.getContext('2d');
         this.spritePos = spritePos;
