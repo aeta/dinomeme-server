@@ -663,6 +663,7 @@ function gameLaunch() {
          * @param {Event} e
          */
         onKeyDown: function (e) {
+            console.log("onkeydown")
             sendEvent(e);
         },
         /**
@@ -2713,10 +2714,10 @@ function gameLaunch() {
         }
     };
 };
-//gameLaunch();
+gameLaunch();
 
 function onDocumentLoad() {
-    //new Runner('.interstitial-wrapper');
+    new Runner('.interstitial-wrapper');
 }
 
 document.addEventListener('DOMContentLoaded', onDocumentLoad);
