@@ -383,7 +383,7 @@ function gameLaunch() {
                 this.spriteDef.TEXT_SPRITE, this.dimensions.WIDTH);
 
             // Draw t-rex
-            this.tRex = new Trex(this.canvas, this.spriteDef.TREX, true, true); 
+            this.tRex = new Trex(this.canvas, this.spriteDef.TREX, true, true);
             this.remote_trexes = {}
 
             this.outerContainerEl.appendChild(this.containerEl);
@@ -621,6 +621,8 @@ function gameLaunch() {
                 } else {
                     var actualDistance =
                         this.distanceMeter.getActualDistance(Math.ceil(this.distanceRan));
+                        socket.emit('distance', this.distanceMeter)
+                        console.log(this.distanceMeter)
 
                     if (actualDistance > 0) {
                         this.invertTrigger = !(actualDistance %

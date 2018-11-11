@@ -14,10 +14,12 @@ var gameStarted = false
 
 /**
  * [id: PlayerObject]
- * 
+ *
  * PlayerObject:
+ *  - username
  * 	- votedStart
  *  - display
+ *  - distance
  */
 var players = {}
 
@@ -26,24 +28,48 @@ module.exports = {
 		io = require('socket.io')(server)
 
 		io.on('connection', socket => {
-			console.log('connect')
+			if (gameStarted) {
+				socket.disconnect(true)
+				console.log("Game started, rejecting any additional connections.")
+				return
+			}
+
+			console.log('Client successfully connected.')
+
 			// generate an id for this socket
 			const id = hat(16)
 			const playerObject = {
+				username: "Untitled",
 				votedStart: false,
-				display: 0
+				display: 0,
+        distance: 0,
 			}
+
+
 			players[id] = playerObject
 
-			socket.join('room')
+			console.log('id: ' + id)
 
 			socket.emit('id', id)
+			socket.join('room')
+
 			io.to('room').emit('playerlist', players)
+
+      	//disconnect player condition
+			socket.on('disconnect', function() {
+				console.log('Got disconnect: '+ id);
+
+				players[id] = null
+				io.to('room').emit('playerlist', players)
+			});
 
 			socket.on('voteStart', socket => {
 				if (gameStarted) return
 
+        console.log("voted START: "+id)
+
 				playerObject.votedStart = true
+        io.to('room').emit('playerlist', players)
 
 				// check if everyone voted
 				for (var i = 0; i < players.length; i++) {
@@ -57,24 +83,13 @@ module.exports = {
 				setInterval(obstacle, 3000)
 			})
 
-			socket.on('event', (event) => {
+      socket.on('distance', (distance) => {
+        	playerObject.distance = distance
+      })
+
+			socket.on('event', (event, id) => {
 				console.log(event)
 				io.to('room').emit('event', event, id)
-			})
-
-			socket.on('jump', () => {
-				if (!gameStarted) return
-				io.to('room').emit('jump', id)
-			})
-
-			socket.on('crouch', () => {
-				if (!gameStarted) return
-				io.to('room').emit('crouch', id)
-			})
-
-			socket.on('obstacle', () => {
-				if (!gameStarted) return
-				io.to('room').emit('obstacle', id)
 			})
 		})
 	}
