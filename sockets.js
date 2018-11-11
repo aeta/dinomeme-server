@@ -11,7 +11,7 @@ const hat = length => {
 }
 
 var gameStarted = false
-var players = []
+var playerlist = []
 
 module.exports = {
 	init: server => {
@@ -28,7 +28,10 @@ module.exports = {
 			}
 			players.push(playerObject)
 
+			socket.join('room')
+
 			socket.emit('id', id)
+			io.to('room').emit('playerlist', playerlist)
 
 			socket.on('voteStart', socket => {
 				if (gameStarted) return
@@ -44,7 +47,7 @@ module.exports = {
 				gameStarted = true
 				io.to('room').emit('startGame')
 
-				setInterval(obstacle, 3)
+				setInterval(obstacle, 3000)
 			})
 
 			socket.on('event', (event) => {
