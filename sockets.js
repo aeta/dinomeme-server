@@ -11,73 +11,73 @@ const hat = length => {
 }
 
 var gameStarted = false
-var playerlist = []
+
+/**
+ * [id: PlayerObject]
+ * 
+ * PlayerObject:
+ * 	- votedStart
+ *  - display
+ */
+var players = {}
 
 module.exports = {
-  init: server => {
-    io = require('socket.io')(server)
+	init: server => {
+		io = require('socket.io')(server)
 
-    io.on('connection', socket => {
-        console.log('connect')
-        // generate an id for this socket
-        const id = hat(16)
-        const playerObject = {
-          id,
-          votedStart: false,
-          display: 0
-        }
-        //disconnect player condition
-        socket.on('disconnect', function() {
-          console.log('Got disconnect!');
+		io.on('connection', socket => {
+			console.log('connect')
+			// generate an id for this socket
+			const id = hat(16)
+			const playerObject = {
+				votedStart: false,
+				display: 0
+			}
+			players[id] = playerObject
 
-					//TODO: add disconnet handler for playerlist
+			socket.join('room')
 
-        });
-      }
-      playerlist.push(playerObject)
+			socket.emit('id', id)
+			io.to('room').emit('playerlist', players)
 
-      socket.join('room')
+			socket.on('voteStart', socket => {
+				if (gameStarted) return
 
-      socket.emit('id', id) io.to('room').emit('playerlist', playerlist)
+				playerObject.votedStart = true
 
-      socket.on('voteStart', socket => {
-        if (gameStarted) return
+				// check if everyone voted
+				for (var i = 0; i < players.length; i++) {
+					if (!players[i].votedStart) return
+				}
 
-        playerObject.votedStart = true
+				// start the game
+				gameStarted = true
+				io.to('room').emit('startGame')
 
-        // check if everyone voted
-        for (var i = 0; i < players.length; i++) {
-          if (!players[i].votedStart) return
-        }
+				setInterval(obstacle, 3000)
+			})
 
-        // start the game
-        gameStarted = true
-        io.to('room').emit('startGame')
+			socket.on('event', (event) => {
+				console.log(event)
+				io.to('room').emit('event', event, id)
+			})
 
-        setInterval(obstacle, 3000)
-      })
+			socket.on('jump', () => {
+				if (!gameStarted) return
+				io.to('room').emit('jump', id)
+			})
 
-      socket.on('event', (event) => {
-        console.log(event)
-        io.to('room').emit('event', event, id)
-      })
+			socket.on('crouch', () => {
+				if (!gameStarted) return
+				io.to('room').emit('crouch', id)
+			})
 
-      socket.on('jump', () => {
-        if (!gameStarted) return
-        io.to('room').emit('jump', id)
-      })
-
-      socket.on('crouch', () => {
-        if (!gameStarted) return
-        io.to('room').emit('crouch', id)
-      })
-
-      socket.on('obstacle', () => {
-        if (!gameStarted) return
-        io.to('room').emit('obstacle', id)
-      })
-    })
-}
+			socket.on('obstacle', () => {
+				if (!gameStarted) return
+				io.to('room').emit('obstacle', id)
+			})
+		})
+	}
 }
 
 const obstacle = () => {
