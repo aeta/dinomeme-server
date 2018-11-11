@@ -42,16 +42,31 @@ module.exports = {
 
 				// start the game
 				gameStarted = true
-				startGame()
+				io.to('room').emit('startGame')
+
+				setInterval(obstacle, 3)
+			})
+
+			socket.on('jump', () => {
+				if (!gameStarted) return
+				io.to('room').emit('jump', id)
+			})
+
+			socket.on('crouch', () => {
+				if (!gameStarted) return
+				io.to('room').emit('crouch', id)
+			})
+
+			socket.on('obstacle', () => {
+				if (!gameStarted) return
+				io.to('room').emit('obstacle', id)
 			})
 		})
 	}
-	// ,
-	// onPiPointChange: (memberId, piPointChange) => {
-	// 	io.to(memberId.toString()).emit('piPointChange', piPointChange)
-	// }
 }
 
-const startGame = () => {
-	io.to('room').emit('startGame')
+const obstacle = () => {
+	io.to('room').emit('obstacle')
+
+	if (gameStarted) setTimeout(obstacle, Math.random() * 2000 + 500)
 }
