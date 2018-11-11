@@ -30,7 +30,7 @@ module.exports = {
 
 		io.on('connection', socket => {
 			if (gameStarted) {
-				socket.close()
+				socket.disconnect(true)
 				console.log("Game started, rejecting any additional connections.")
 				return
 			}
@@ -44,18 +44,21 @@ module.exports = {
 				votedStart: false,
 				display: 0
 			}
-			//disconnect player condition
+
 
 			players[id] = playerObject
+
 			console.log('id: ' + id)
+
 			socket.emit('id', id)
 			socket.join('room')
 
 			io.to('room').emit('playerlist', players)
+
+      	//disconnect player condition
 			socket.on('disconnect', function() {
 				console.log('Got disconnect: '+ id);
 
-				//TODO: add disconnet handler for playerlist
 				players[id] = null
 				io.to('room').emit('playerlist', players)
 			});
@@ -63,7 +66,10 @@ module.exports = {
 			socket.on('voteStart', socket => {
 				if (gameStarted) return
 
+        console.log("voted START: "+id)
+
 				playerObject.votedStart = true
+        io.to('room').emit('playerlist', players)
 
 				// check if everyone voted
 				for (var i = 0; i < players.length; i++) {

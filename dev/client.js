@@ -33,5 +33,31 @@ socket.on('event', (event, id) => {
 // //recieve list of connected players
 socket.on('playerlist', (playerlist) => {
 	console.log(playerlist)
-
+	checkVoteCount(playerlist)
 })
+
+function checkVoteCount(dict) {
+	var voteCount = 0;
+	var totalPlayers = 0;
+	for(var key in dict) {
+  var value = dict[key];
+	if (value == null) {
+		continue
+	}
+	totalPlayers +=1
+	if (value.votedStart) {
+		voteCount += 1
+	}
+
+	console.log (voteCount)
+	document.getElementById('voteCount').textContent = voteCount + " / "
+	document.getElementById("totalPlayers").textContent = totalPlayers
+
+  // do something with "key" and "value" variables
+
+}
+}
+
+function clickVote() {
+	socket.emit('voteStart')
+}
