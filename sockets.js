@@ -36,14 +36,14 @@ module.exports = {
 				display: 0
 			}
 			//disconnect player condition
-			 socket.on('disconnect', function() {
-				 console.log('Got disconnect: '+ id);
-				 
-				 //TODO: add disconnet handler for playerlist
 
-			 });
 			players[id] = playerObject
+			socket.on('disconnect', function() {
+				console.log('Got disconnect: '+ id);
 
+				//TODO: add disconnet handler for playerlist
+
+			});
 			socket.join('room')
 
 			socket.emit('id', id)
