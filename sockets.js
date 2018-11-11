@@ -47,6 +47,11 @@ module.exports = {
 				setInterval(obstacle, 3)
 			})
 
+			socket.on('event', (event) => {
+				console.log(event)
+				io.to('room').emit('event', event, id)
+			})
+
 			socket.on('jump', () => {
 				if (!gameStarted) return
 				io.to('room').emit('jump', id)

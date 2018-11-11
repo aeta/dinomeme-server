@@ -658,12 +658,18 @@
                 document.removeEventListener(Runner.events.MOUSEUP, this);
             }
         },
-
         /**
          * Process keydown.
          * @param {Event} e
          */
         onKeyDown: function (e) {
+            sendEvent(e);
+        },
+        /**
+         * Process keydown.
+         * @param {Event} e
+         */
+        onWebSocketJump: function (e) {
             // Prevent native page scrolling whilst tapping on mobile.
             if (IS_MOBILE && this.playing) {
                 e.preventDefault();
