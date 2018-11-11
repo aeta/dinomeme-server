@@ -11,6 +11,8 @@ const hat = length => {
 }
 
 var gameStarted = false
+var referenceDate
+var nowEpoch = Date.now()
 
 /**
  * [id: PlayerObject]
@@ -80,12 +82,15 @@ module.exports = {
 				gameStarted = true
 				io.to('room').emit('startGame')
 
-				setInterval(obstacle, 3000)
+				setInterval(obstacle, 500)
 			})
 
       socket.on('distance', (distance) => {
         	playerObject.distance = distance
       })
+
+
+
 
 			socket.on('event', (event, id) => {
 				console.log(event)
@@ -99,4 +104,18 @@ const obstacle = () => {
   io.to('room').emit('obstacle')
 
   if (gameStarted) setTimeout(obstacle, Math.random() * 2000 + 500)
+
+  //update player object
+  io.to('room').emit('playerlist', players)
+// if (referenceDate == null || referenceDate == undefined) {
+//   referenceDate = new Date().value
+// } else {
+//   const now = new Date().value
+//   const delta = now - referenceDate
+//   if delta >= 500 {
+//     // send the thing
+//       io.to('room').emit('playerlist', players)
+//     referenceDate = now
+//   }
+// }
 }

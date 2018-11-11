@@ -9,6 +9,7 @@
 //    GLOBALSPEED += 0.000000000001
 //  }, 10000)
 //}
+var frameCount = 0;
 function gameLaunch() {
     'use strict';
     /**
@@ -621,8 +622,16 @@ function gameLaunch() {
                 } else {
                     var actualDistance =
                         this.distanceMeter.getActualDistance(Math.ceil(this.distanceRan));
-                        socket.emit('distance', this.distanceMeter)
-                        console.log(this.distanceMeter)
+
+                    //update distance in sockets
+                    if (frameCount % 15 == 0) {
+                      frameCount = 0
+                      socket.emit('distance', actualDistance)
+                      console.log("distance: " + actualDistance)
+                    }
+                    frameCount += 1;
+
+
 
                     if (actualDistance > 0) {
                         this.invertTrigger = !(actualDistance %
@@ -704,7 +713,7 @@ function gameLaunch() {
          * @param {Event} e
          */
         onKeyDown: function (e) {
-            console.log("onkeydown")
+            //console.log("onkeydown")
             sendEvent(e);
         },
         /**
@@ -1407,7 +1416,7 @@ function gameLaunch() {
                         speed += this.speedOffset;
                     }
                     this.xPos -= Math.floor((speed * FPS / 1000) * deltaTime);
-                    console.log("obstacle xpos: " + Math.floor((speed * FPS / 1000) * deltaTime))
+                    //console.log("obstacle xpos: " + Math.floor((speed * FPS / 1000) * deltaTime))
 
                     // Update frame
                     if (this.typeConfig.numFrames) {
