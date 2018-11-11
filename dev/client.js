@@ -4,7 +4,7 @@
 
 var your_player_id
 var is_game_running
-var socket = io('http://192.168.2.129:3001/')
+var socket = io('http://192.168.2.174:3001/')
 var GAP = 50
 var OBSTACLE_TYPE = 0
 
@@ -37,9 +37,9 @@ socket.on('event', (event, id) => {
 socket.on('game_start', () => {
 	console.log("starting game");
 	is_game_running = true
-	recieveEvent('JUMP', your_player_id)
+	//recieveEvent('JUMP', your_player_id)
 
-	document.getElementById("messageBox").style.visibility="hidden";
+	//document.getElementById("messageBox").style.visibility="hidden";
 })
 
 socket.on('game_over', () => {
