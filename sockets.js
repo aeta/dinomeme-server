@@ -26,7 +26,7 @@ module.exports = {
 				votedStart: false,
 				display: 0
 			}
-			players.push(playerObject)
+			playerlist.push(playerObject)
 
 			socket.join('room')
 
