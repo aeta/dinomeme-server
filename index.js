@@ -10,6 +10,7 @@
 //  }, 10000)
 //}
 var frameCount = 0;
+var remote_trexes = {}
 function gameLaunch() {
     'use strict';
     /**
@@ -384,8 +385,8 @@ function gameLaunch() {
                 this.spriteDef.TEXT_SPRITE, this.dimensions.WIDTH);
 
             // Draw t-rex
-            this.tRex = new Trex(this.canvas, this.spriteDef.TREX, true, true);
-            this.remote_trexes = {}
+            this.tRex = new Trex(this.canvas, this.spriteDef.TREX, your_player_id, true);
+
 
             this.outerContainerEl.appendChild(this.containerEl);
 
@@ -463,10 +464,23 @@ function gameLaunch() {
                 }
             }
         },
-
+        // make other players sprites
         updatePlayerList: function(players) {
+
             for (var key in players) {
-                this.remote_trexes[key] = new Trex(this.canvas, this.spriteDef.TREX, true, false)
+
+              var value = players[key]
+              if (value == null) {
+                continue
+              }
+              if (remote_trexes[key] == null) {
+                remote_trexes[key] = new Trex(this.canvas, this.spriteDef.TREX, key, false)
+              }
+              else {
+                var position = value.distance - players[your_player_id]
+                remote_trexes[key].xpos += position
+              }
+
             }
         },
 
