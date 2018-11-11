@@ -669,7 +669,7 @@ function gameLaunch() {
          * Process keydown.
          * @param {Event} e
          */
-        onWebSocketJump: function (e) {
+        onWebSocketEvent: function (e, playerID) {
             // Prevent native page scrolling whilst tapping on mobile.
             if (IS_MOBILE && this.playing) {
                 e.preventDefault();

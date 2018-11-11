@@ -11,7 +11,14 @@ const hat = length => {
 }
 
 var gameStarted = false
-var players = []
+/**
+ * [id: PlayerObject]
+ * 
+ * PlayerObject:
+ * 	- votedStart
+ *  - display
+ */
+var players = {}
 
 module.exports = {
 	init: server => {
@@ -22,11 +29,10 @@ module.exports = {
 			// generate an id for this socket
 			const id = hat(16)
 			const playerObject = {
-				id,
 				votedStart: false,
 				display: 0
 			}
-			players.push(playerObject)
+			players[id] = playerObject
 
 			socket.join('room')
 
