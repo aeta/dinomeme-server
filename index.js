@@ -376,7 +376,7 @@ function gameLaunch() {
                 this.spriteDef.TEXT_SPRITE, this.dimensions.WIDTH);
 
             // Draw t-rex
-            this.tRex = new Trex(this.canvas, this.spriteDef.TREX);
+            this.tRex = new Trex(this.canvas, this.spriteDef.TREX,id,true);
 
             this.outerContainerEl.appendChild(this.containerEl);
 
@@ -1487,7 +1487,7 @@ function gameLaunch() {
      * @param {Object} spritePos Positioning within image sprite.
      * @constructor
      */
-    function Trex(canvas, spritePos, id="") {
+    function Trex(canvas, spritePos, TrexId="", isPlayer = false) {
         this.canvas = canvas;
         this.canvasCtx = canvas.getContext('2d');
         this.spritePos = spritePos;
@@ -1514,8 +1514,8 @@ function gameLaunch() {
         this.jumpCount = 0;
         this.jumpspotX = 0;
         //socket io multiplayer id
-        this.id = id;
-
+        this.trexId = TrexId;
+        this.isplayer = isPlayer;
         this.init();
     };
 
@@ -1617,7 +1617,6 @@ function gameLaunch() {
                 Runner.config.BOTTOM_PAD;
             this.yPos = this.groundYPos;
             this.minJumpHeight = this.groundYPos - this.config.MIN_JUMP_HEIGHT;
-            this.id = "";
             this.draw(0, 0);
             this.update(0, Trex.status.WAITING);
         },
