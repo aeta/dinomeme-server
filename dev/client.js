@@ -3,7 +3,8 @@
  */
 
 var your_player_id
-var socket = io('http://localhost:3001/')
+var is_game_running
+var socket = io('http://192.168.2.129:3001/')
 var GAP = 5
 
 socket.on('gapthing', (gapnumber) => {
@@ -30,11 +31,29 @@ socket.on('event', (event, id) => {
 	recieveEvent(event, id)
 })
 
+socket.on('game_start', () => {
+	console.log("starting game");
+	is_game_running = true
+	recieveEvent('JUMP', your_player_id)
+
+	document.getElementById("messageBox").style.visibility="hidden";
+})
+
+socket.on('game_over', () => {
+	console.log("Everyone's dead :(((")
+	is_game_running = false
+	// TODO: reset state.
+})
+
 // //recieve list of connected players
 socket.on('playerlist', (playerlist) => {
 	console.log(playerlist)
 	checkVoteCount(playerlist)
 })
+
+function handleEndGame() {
+	socket.emit('im_dead')
+}
 
 function checkVoteCount(dict) {
 	var voteCount = 0;

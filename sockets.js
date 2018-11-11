@@ -42,9 +42,9 @@ module.exports = {
 			const playerObject = {
 				username: "Untitled",
 				votedStart: false,
+				isDead: false,
 				display: 0
 			}
-
 
 			players[id] = playerObject
 
@@ -54,6 +54,18 @@ module.exports = {
 			socket.join('room')
 
 			io.to('room').emit('playerlist', players)
+
+			socket.on('im_dead', function() {
+				console.log("Recieved death message")
+				players[id].isDead = true
+
+				if (isEveryoneDead()) {
+					console.log("Everyone's dead :(")
+					io.to('room').emit('game_over')
+					resetGameState()
+					io.to('room').emit('playerlist', players)
+				}
+			})
 
       	//disconnect player condition
 			socket.on('disconnect', function() {
@@ -72,13 +84,16 @@ module.exports = {
         io.to('room').emit('playerlist', players)
 
 				// check if everyone voted
-				for (var i = 0; i < players.length; i++) {
-					if (!players[i].votedStart) return
+				var someoneDidntVoteStart = false
+				for (var key in players) {
+					if (players[key] == null) continue
+					if (!players[key].votedStart) someoneDidntVoteStart = true
 				}
+				if (someoneDidntVoteStart) return 
 
 				// start the game
 				gameStarted = true
-				io.to('room').emit('startGame')
+				io.to('room').emit('game_start')
 
         console.log("shitfire")
 
@@ -91,6 +106,36 @@ module.exports = {
 				io.to('room').emit('event', event, id)
 			})
 		})
+	}
+}
+
+function isEveryoneDead() {
+	for (var id in players)
+		if (players[id] == null) continue
+		if (!players[id].isDead) return false
+
+	return true
+}
+
+function resetGameState() {
+	compactPlayers()
+	for (var key in players) {
+		players[key].votedStart = false
+		players[key].isDead = false
+	}
+
+	gameStarted = false
+}
+
+/**
+ * This will remove all null/undefined player objects.
+ */
+function compactPlayers() {
+	for (var id in players) {
+		var compactPlayers = {}
+		if (players[id] == null || players[id] == undefined) continue
+		compactPlayers[id] = players[id]
+		players = compactPlayers
 	}
 }
 
